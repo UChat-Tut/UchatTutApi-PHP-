@@ -1,0 +1,107 @@
+Errors codes:
+	100 => 'Unknown error',
+    101 => 'Method not allowed',
+    102 => 'One of the parameters specified was missing or invalid',
+    103 => 'Data not found',
+    104 => 'Password incorrect',
+    106 => 'Data update error',
+    105 => 'Data save error',
+    107 => 'Data delete error',
+    108 => 'Token invalid',
+    109 => 'A user with this login already exists'
+
+
+/api/authorization
+
+POST
+
+parameters:
+	login
+	password
+
+response
+{
+    "access_token": ""
+}
+
+
+
+/api/users
+
+GET
+
+response
+{
+    "1": {
+        "id": "",
+        "name": "",
+        "surname": "",
+        "email": "",
+        "salt": "0",
+        "pass_hash": "",
+        "access_token": ""
+    }
+}
+
+/api/events
+
+GET
+
+response
+{
+    "1": {
+        "id": "",
+        "title": "",
+        "owner_id": "",
+        "datetime_start": "2019-12-01 15:30:00",
+        "datetime_end": "2019-12-01 17:30:00",
+        "repeat_mode": ""
+    }
+}
+
+POST
+
+parameters:
+	title
+	datetime_start
+	datetime_end
+	repeat_mode
+	token
+
+response
+{
+    "status": "0"
+}
+
+
+
+/api/events/{id}
+
+GET
+
+response
+
+"{id}": {
+   "id": "{id}",
+   "title": "",
+   "owner_id": "",
+   "datetime_start": "2019-12-01 15:30:00",
+   "datetime_end": "2019-12-01 17:30:00",
+   "repeat_mode": "1"
+}
+
+
+
+UPDATE
+
+parameters:
+	title
+	datetime_start
+	datetime_end
+	repeat_mode
+	token
+
+response
+{
+    "status": "0"
+}
