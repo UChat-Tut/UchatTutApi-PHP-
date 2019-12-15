@@ -74,17 +74,18 @@ class UsersApi extends Api
      */
     public function createAction()
     {
+        return $this->response('Method not allowed', 405);
+
         $name = $this->requestParams['name'] ?? '';
         $surname = $this->requestParams['surname'] ?? '';
+        $middlename = $this->requestParams['email'] ?? '';
+        $isTutor = $this->requestParams['email'] ?? '';
         $email = $this->requestParams['email'] ?? '';
+        $password = $this->requestParams['password'] ?? '';
 
         if ($name && $surname && $email) {
-            $user = new UsersModel([
-                'name' => $name,
-                'surname' => $surname,
-                'email' => $email
-            ]);
-            if ($new_user = $user->saveNew()) {
+
+            if (true) {
                 return $this->response('Data saved.', 200);
             }
             return $this->responseError(105);
@@ -100,6 +101,8 @@ class UsersApi extends Api
      */
     public function updateAction()
     {
+        return $this->response('Method not allowed', 405);
+
         $parse_url = parse_url($this->requestUri[0]);
         $userId = $parse_url['path'] ?? null;
 
@@ -130,6 +133,8 @@ class UsersApi extends Api
      */
     public function deleteAction()
     {
+        return $this->response('Method not allowed', 405);
+
         $parse_url = parse_url($this->requestUri[0]);
         $userId = $parse_url['path'] ?? null;
 

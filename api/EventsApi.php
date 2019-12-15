@@ -33,8 +33,6 @@ class EventsApi extends Api
                 $user = $userModel->getOne();
 
                 if ($user) {
-
-                    print_r($userModel);
                     $eventsModel->addFilter('owner_id', $user['id']);
 
                     if ($events = $eventsModel->getAll()) {
@@ -115,14 +113,8 @@ class EventsApi extends Api
             if ($user) {
                 $owner_id = $user['id'];
 
-                $event = new EventsModel([
-                    'title' => $title,
-                    'owner_id' => $owner_id,
-                    'datetime_start' => $datetime_start,
-                    'datetime_end' => $datetime_end,
-                    'repeat_mode' => $repeat_mode
-                ]);
-                if ($event->saveNew()) {
+                $eventModel = new EventsModel();
+                if ($eventModel->saveNew(['title' => $title, 'owner_id' => $owner_id, 'datetime_start' => $datetime_start, 'datetime_end' => $datetime_end, 'repeat_mode' => $repeat_mode])) {
                     return $this->response('Data saved.', 200);
                 }
             }
@@ -147,8 +139,8 @@ class EventsApi extends Api
         $datetime_end = $this->requestParams['datetime_end'] ?? '';
         $repeat_mode = $this->requestParams['repeat_mode'] ?? '';
         $token = $this->requestParams['token'] ?? '';
-        if ($title && $datetime_start && $datetime_end && $repeat_mode && $token) {
 
+        if ($token) {
             $eventModel = new EventsModel();
             $eventModel->addFilter('id', $eventId);
             $eventModel->addFields(['owner_id']);
@@ -164,17 +156,7 @@ class EventsApi extends Api
             if ($user) {
                 if ($event['owner_id'] == $user['id']) {
                     // Заполняем объект свойствами
-                    $event = new EventsModel([
-                        'title' => $title,
-                        'owner_id' => $event['owner_id'],
-                        'datetime_start' => $datetime_start,
-                        'datetime_end' => $datetime_end,
-                        'repeat_mode' => $repeat_mode
-                    ]);
-
-                    $upd_event = $event->saveNew();
-
-                    if ($upd_event) {
+                    if ($eventModel->update($eventId, ['title' => $title, 'owner_id' => $event['owner_id'], 'datetime_start' => $datetime_start, 'datetime_end' => $datetime_end, 'repeat_mode' => $repeat_mode])) {
                         return $this->response('Data updated.', 200);
                     }
 
@@ -189,7 +171,7 @@ class EventsApi extends Api
     /**
      * Метод DELETE
      * Удаление отдельной записи (по ее id)
-     * http://ДОМЕН/users/1
+     * http://ДОМЕН/event/1
      * @return string
      */
     public function deleteAction()
@@ -200,19 +182,26 @@ class EventsApi extends Api
         $token = $this->requestParams['token'] ?? '';
 
         if ($token) {
-            $user = UsersModel::getByParam('access_token', $token);
+            $userModel = new UsersModel();
+            $userModel->addFields(['id']);
+            $userModel->addFilter('access_token', $token);
+            $user = $userModel->getOne();
 
             if ($user) {
-                $owner_id = $user->id;
+                $owner_id = $user['id'];
 
-                $event = (new EventsModel)->getByParam('id', $eventId);
+                $eventModel = new EventsModel();
+                $eventModel->addFields(['id']);
+                $eventModel->addFields(['owner_id']);
+                $eventModel->addFilter('id', $eventId);
+                $event = $eventModel->getOne();
 
                 if (!$eventId || !$event) {
                     return $this->responseError(103);
                 }
 
-                if ($owner_id == $event->owner_id) {
-                    if (R::trash($event)) {
+                if ($owner_id == $event['owner_id']) {
+                    if ($eventModel->delete($eventModel['id'])) {
                         return $this->response('Data deleted.', 200);
                     }
                 }

@@ -11,12 +11,6 @@ class RegistrationApi extends Api
         return $this->responseError(101);
     }
 
-    /**
-     * Метод GET
-     * Просмотр отдельной записи (по id)
-     * http://ДОМЕН/auth/1
-     * @return string
-     */
     public function viewAction()
     {
         return $this->responseError(101);
@@ -24,8 +18,8 @@ class RegistrationApi extends Api
 
     /**
      * Метод POST
-     * Создание новой записи
-     * http://ДОМЕН/users + параметры запроса name, email
+     * Создание нового пользователя
+     * http://ДОМЕН/registration + параметры запроса ...
      * @return string
      */
     public function createAction()
@@ -43,16 +37,10 @@ class RegistrationApi extends Api
             $userModel->addFilter('email', $email);
             $user = $userModel->getOne();
             if (!$user) {
-                $userModel = new UsersModel([
-                    'name' => $name,
-                    'surname' => $surname,
-                    'middlename' => $middlename,
-                    'is_tutor' => $is_tutor,
-                    'email' => $email,
-                    'pass_hash' => password_hash($password, PASSWORD_BCRYPT)
-                ]);
+                $userModel = new UsersModel();
 
-                if ($userModel->saveNew()) {
+                if ($userModel->saveNew(['name' => $name, 'surname' => $surname, 'middlename' => $middlename, 'is_tutor' => $is_tutor, 'email' => $email, 'pass_hash' => password_hash($password, PASSWORD_BCRYPT)
+                ])) {
                     return $this->response('Data saved.', 200);
                 }
                 return $this->responseError(105);

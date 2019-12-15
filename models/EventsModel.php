@@ -14,9 +14,4 @@ class EventsModel extends Model
     protected $start_fields = ['title'];
     protected $allowed_extra_fields = ['id', 'owner_id', 'datetime_start', 'datetime_end', 'repeat_mode'];
     protected $validFilterableFields = ['id', 'owner_id', 'datetime_start', 'datetime_end', 'repeat_mode'];
-
-
-    protected $filters = [];
-    protected $extra_fields = [];
-
 }

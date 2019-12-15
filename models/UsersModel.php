@@ -14,8 +14,4 @@ class UsersModel extends Model
     protected $start_fields = ['name', 'surname'];
     protected $allowed_extra_fields = ['id', 'name', 'surname', 'middlename', 'isTutor', 'pass_hash', 'email', 'access_token'];
     protected $validFilterableFields = ['id', 'name', 'surname', 'middlename', 'isTutor', 'email'];
-
-
-    protected $filters = [];
-    protected $extra_fields = [];
 }

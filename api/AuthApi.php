@@ -11,12 +11,6 @@ class AuthApi extends Api
         return $this->response('Method not allowed', 405);
     }
 
-    /**
-     * Метод GET
-     * Просмотр отдельной записи (по id)
-     * http://ДОМЕН/auth/1
-     * @return string
-     */
     public function viewAction()
     {
         return $this->response('Method not allowed', 405);
@@ -24,8 +18,8 @@ class AuthApi extends Api
 
     /**
      * Метод POST
-     * Создание новой записи
-     * http://ДОМЕН/users + параметры запроса name, email
+     * Получение токена
+     * http://ДОМЕН/authorization + параметры запроса ...
      * @return string
      */
     public function createAction()
@@ -35,6 +29,7 @@ class AuthApi extends Api
 
         if ($email && $password) {
             $userModel = new UsersModel();
+            $userModel->addFields(['id', 'pass_hash']);;
             $userModel->addFilter('email', $email);
 
             $user = $userModel->getOne();
@@ -44,9 +39,7 @@ class AuthApi extends Api
                     $salt = uniqid(mt_rand(), true);
                     $access_token = password_hash($email . $salt . $password, PASSWORD_BCRYPT);
 
-                    $userModel->setData(['salt' => $salt, 'access_token' => $access_token]);
-
-                    if ($userModel->save()) {
+                    if ($userModel->update($user['id'], ['salt' => $salt, 'access_token' => $access_token])) {
                         return $this->response([
                             'access_token' => $access_token
                         ], 200);
